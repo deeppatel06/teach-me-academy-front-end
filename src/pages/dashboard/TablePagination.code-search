@@ -1,0 +1,32 @@
+# Query: TablePagination
+# ContextLines: 1
+
+6 results - 4 files
+
+src/pages/dashboard/EcommerceProductList.js:
+   15    TableContainer,
+   16:   TablePagination,
+   17  } from '@mui/material';
+
+  242  
+  243:           <TablePagination
+  244              rowsPerPageOptions={[5, 10, 25]}
+
+src/pages/dashboard/UserList.js:
+   17    TableContainer,
+   18:   TablePagination,
+   19  } from '@mui/material';
+
+  220  
+  221:           <TablePagination
+  222              rowsPerPageOptions={[5, 10, 25]}
+
+src/theme/overrides/DataGrid.js:
+   9            border: `1px solid transparent`,
+  10:           '& .MuiTablePagination-root': {
+  11              borderTop: 0,
+
+src/theme/overrides/Table.js:
+  51      },
+  52:     MuiTablePagination: {
+  53        styleOverrides: {
