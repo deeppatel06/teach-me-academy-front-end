@@ -52,6 +52,8 @@ const ContentStyle = styled("div")(({ theme }) => ({
 export default function Login() {
   const smUp = useResponsive("up", "sm");
 
+  console.log("== Hello ");
+
   return (
     <Page title="Login">
       <RootStyle>
