@@ -2,9 +2,17 @@
 
 import { createContext, useEffect, useReducer } from "react";
 import PropTypes from "prop-types";
+// import { useNavigate } from "react-router-dom";
+
 // utils
 import axios from "../utils/axios";
-import { isValidToken, setSession } from "../utils/jwt";
+import {
+  // isValidToken,
+  setSession,
+} from "../utils/jwt";
+
+//
+// import { PATH_AFTER_LOGIN } from "../config";
 
 // import { setItem, getItem } from '../utils/localStorage';
 
@@ -67,15 +75,35 @@ const handlers = {
     loginErrMsg: null,
     user: null,
   }),
+  REGISTER_LOAD: (state, action) => ({
+    ...state,
+    isAuthenticated: false,
+    user: null,
+    loginSuccMsg: null,
+    loginErrMsg: null,
+    regSuccMsg: null,
+    regErrMsg: null,
+  }),
   REGISTER: (state, action) => {
     const { user } = action.payload;
 
     return {
       ...state,
       isAuthenticated: true,
+      isInitialized: true,
       loginSuccMsg: null,
       loginErrMsg: null,
       user,
+    };
+  },
+  REGISTER_ERROR: (state, action) => {
+    const { message } = action.payload;
+    return {
+      ...state,
+      isAuthenticated: false,
+      user: null,
+      loginSuccMsg: null,
+      loginErrMsg: message,
     };
   },
 };
@@ -98,6 +126,8 @@ AuthProvider.propTypes = {
 };
 
 function AuthProvider({ children }) {
+  // const navigate = useNavigate();
+
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -105,9 +135,15 @@ function AuthProvider({ children }) {
       try {
         const accessToken = window.localStorage.getItem("accessToken");
 
-        if (accessToken && isValidToken(accessToken)) {
+        if (
+          accessToken
+          // validation function is not working ...
+          // && isValidToken(accessToken)
+        ) {
           setSession(accessToken);
-          const user = JSON.parse(window.localStorage.getItem("userData"));
+
+          const response = await axios.get("/auth/my-account");
+          const { user } = response.data;
 
           dispatch({
             type: "INITIALIZE",
@@ -137,6 +173,7 @@ function AuthProvider({ children }) {
       }
     };
 
+    // eslint-disable-next-line
     initialize();
   }, []);
 
@@ -144,25 +181,25 @@ function AuthProvider({ children }) {
     dispatch({
       type: "LOGIN_LOAD",
     });
-    const response = await axios.post("/api/v1/login", {
+    const response = await axios.post("/auth/login", {
       email,
       password,
     });
 
-    const { data: user, status, message } = response.data;
+    const { data: userData, status, message } = response.data;
 
     if (status === 1) {
-      const accessToken = user?.access_token;
+      const accessToken = userData?.accessToken;
 
       window.localStorage.setItem("userEmail", JSON.stringify(email));
       window.localStorage.setItem("userPassword", JSON.stringify(password));
-      window.localStorage.setItem("userData", JSON.stringify(user));
+      window.localStorage.setItem("userData", JSON.stringify(userData?.user));
 
       setSession(accessToken);
       dispatch({
         type: "LOGIN",
         payload: {
-          user,
+          user: userData?.user,
           message,
           isAuthenticated: true,
         },
@@ -178,21 +215,30 @@ function AuthProvider({ children }) {
   };
 
   const register = async (email, password, firstName, lastName) => {
-    const response = await axios.post("/api/account/register", {
-      email,
-      password,
-      firstName,
-      lastName,
-    });
-    const { accessToken, user } = response.data;
+    dispatch({ type: "REGISTER_LOAD" });
+    try {
+      const response = await axios.post("/auth/register", {
+        email,
+        password,
+        username: `${firstName} ${lastName}`,
+      });
+      const { accessToken, user, status, message } = response.data;
 
-    window.localStorage.setItem("accessToken", accessToken);
-    dispatch({
-      type: "REGISTER",
-      payload: {
-        user,
-      },
-    });
+      if (status === 1) {
+        window.localStorage.setItem("accessToken", accessToken);
+        dispatch({
+          type: "REGISTER",
+          payload: {
+            user,
+          },
+        });
+      } else {
+        dispatch({ type: "REGISTER_ERROR", payload: { message } });
+      }
+    } catch (error) {
+      dispatch({ type: "REGISTER_ERROR", payload: { message: error.message } });
+      console.log("error", error);
+    }
   };
 
   const logout = async () => {

@@ -109,7 +109,7 @@ export default function Register() {
               align="center"
               sx={{ color: "text.secondary", mt: 3 }}
             >
-              By registering, I agree to Minimal Terms of Service and Privacy
+              By registering, I agree to Teach-Me Terms of Service and Privacy
               Policy.
             </Typography>
 
