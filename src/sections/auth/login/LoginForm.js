@@ -2,19 +2,16 @@
 
 import * as Yup from "yup";
 import { useState, useEffect } from "react";
-import {
-  // Link as RouterLink,
-  useNavigate,
-} from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 // form
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 // @mui
-import { Stack, Alert, IconButton, InputAdornment } from "@mui/material";
+import { Stack, Alert, IconButton, InputAdornment, Link } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // routes
-// import { PATH_AUTH } from '../../../routes/paths';
+import { PATH_AUTH } from "../../../routes/paths";
 // hooks
 import useAuth from "../../../hooks/useAuth";
 import useIsMountedRef from "../../../hooks/useIsMountedRef";
@@ -22,6 +19,7 @@ import useIsMountedRef from "../../../hooks/useIsMountedRef";
 import Iconify from "../../../components/Iconify";
 import { FormProvider, RHFTextField } from "../../../components/hook-form";
 import { PATH_AFTER_LOGIN } from "../../../config";
+import { RHFCheckbox } from "../../../components/hook-form";
 
 // ----------------------------------------------------------------------
 
@@ -135,22 +133,31 @@ export default function LoginForm() {
         />
       </Stack>
 
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{ my: 2 }}
+      >
+        <RHFCheckbox name="remember" label="Remember me" />
+        <Link
+          component={RouterLink}
+          variant="subtitle2"
+          to={PATH_AUTH.resetPassword}
+        >
+          Forgot password?
+        </Link>
+      </Stack>
+
       <LoadingButton
         fullWidth
         size="large"
         type="submit"
         variant="contained"
         loading={isSubmitting}
-        sx={{ my: 3 }}
       >
         Login
       </LoadingButton>
-
-      {/* <Stack direction="row" justifyContent="center">
-        <Link component={RouterLink} variant="subtitle2" to={PATH_AUTH.resetPassword}>
-          Forgot password?
-        </Link>
-      </Stack> */}
     </FormProvider>
   );
 }

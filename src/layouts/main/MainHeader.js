@@ -3,7 +3,13 @@
 import { useLocation } from "react-router-dom";
 // @mui
 import { styled, useTheme } from "@mui/material/styles";
-import { Box, Button, AppBar, Toolbar, Container } from "@mui/material";
+import {
+  Box,
+  // Button,
+  AppBar,
+  Toolbar,
+  Container,
+} from "@mui/material";
 // hooks
 import useOffSetTop from "../../hooks/useOffSetTop";
 import useResponsive from "../../hooks/useResponsive";
@@ -17,7 +23,7 @@ import Logo from "../../components/Logo";
 import MenuDesktop from "./MenuDesktop";
 import MenuMobile from "./MenuMobile";
 import navConfig from "./MenuConfig";
-import { PATH_AUTH } from "../../routes/paths";
+// import { PATH_AUTH } from "../../routes/paths";
 
 // ----------------------------------------------------------------------
 
@@ -87,19 +93,6 @@ export default function MainHeader() {
               navConfig={navConfig}
             />
           )}
-
-          <Button
-            variant="contained"
-            rel="noopener"
-            href={PATH_AUTH.login}
-            sx={{ mr: 2 }}
-          >
-            Login
-          </Button>
-
-          <Button variant="contained" rel="noopener" href={PATH_AUTH.register}>
-            Register
-          </Button>
 
           {!isDesktop && (
             <MenuMobile isOffset={isOffset} navConfig={navConfig} />

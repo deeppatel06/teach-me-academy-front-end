@@ -9,7 +9,7 @@ import {
 } from "@mui/material/styles";
 //
 import palette from "./palette";
-// import typography from "./typography";
+import typography from "./typography";
 import breakpoints from "./breakpoints";
 import componentsOverride from "./overrides";
 import shadows, { customShadows } from "./shadows";
@@ -28,7 +28,7 @@ export default function ThemeProvider({ children }) {
   const themeOptions = useMemo(
     () => ({
       palette: isLight ? palette.light : palette.dark,
-      // typography,
+      typography,
       breakpoints,
       shape: { borderRadius: 8 },
       direction: themeDirection,

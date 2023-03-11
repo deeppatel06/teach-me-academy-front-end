@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import { m } from "framer-motion";
 import { useState, useEffect } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 // @mui
@@ -13,7 +12,6 @@ import {
   Popover,
   ListItem,
   ListSubheader,
-  CardActionArea,
 } from "@mui/material";
 // components
 import Iconify from "../../components/Iconify";
@@ -55,6 +53,7 @@ MenuDesktop.propTypes = {
 export default function MenuDesktop({ isOffset, isHome, navConfig }) {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     if (open) {
@@ -63,8 +62,9 @@ export default function MenuDesktop({ isOffset, isHome, navConfig }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  const handleOpen = () => {
+  const handleOpen = (event) => {
     setOpen(true);
+    setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
@@ -82,6 +82,7 @@ export default function MenuDesktop({ isOffset, isHome, navConfig }) {
           onClose={handleClose}
           isOffset={isOffset}
           isHome={isHome}
+          anchorEl={anchorEl}
         />
       ))}
     </Stack>
@@ -125,6 +126,7 @@ MenuDesktopItem.propTypes = {
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
   onOpen: PropTypes.func,
+  anchorEl: PropTypes.object,
   item: PropTypes.shape({
     path: PropTypes.string,
     title: PropTypes.string,
@@ -132,7 +134,15 @@ MenuDesktopItem.propTypes = {
   }),
 };
 
-function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
+function MenuDesktopItem({
+  item,
+  isHome,
+  isOpen,
+  isOffset,
+  onOpen,
+  onClose,
+  anchorEl,
+}) {
   const { title, path, children } = item;
 
   if (children) {
@@ -144,7 +154,6 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
             display: "flex",
             cursor: "pointer",
             alignItems: "center",
-            ...(isHome && { color: "common.white" }),
             ...(isOffset && { color: "text.primary" }),
             ...(isOpen && { opacity: 0.48 }),
           }}
@@ -162,8 +171,7 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
 
         <Popover
           open={isOpen}
-          anchorReference="anchorPosition"
-          anchorPosition={{ top: 80, left: 0 }}
+          anchorEl={anchorEl}
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
           transformOrigin={{ vertical: "top", horizontal: "center" }}
           onClose={onClose}
@@ -173,9 +181,8 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
               pt: 5,
               pb: 3,
               right: 16,
-              m: "auto",
               borderRadius: 2,
-              maxWidth: (theme) => theme.breakpoints.values.lg,
+              maxWidth: (theme) => theme.breakpoints.values.md,
               boxShadow: (theme) => theme.customShadows.z24,
             },
           }}
@@ -185,12 +192,7 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
               const { subheader, items } = list;
 
               return (
-                <Grid
-                  key={subheader}
-                  item
-                  xs={12}
-                  md={subheader === "Dashboard" ? 6 : 2}
-                >
+                <Grid key={subheader} item xs={12} md={12}>
                   <List disablePadding>
                     <ListSubheader
                       disableSticky
@@ -208,7 +210,7 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
 
                     {items.map((item) => (
                       <ListItemStyle
-                        key={item.title}
+                        key={`item-${item.title}`}
                         to={item.path}
                         component={RouterLink}
                         underline="none"
@@ -219,33 +221,8 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
                           },
                         }}
                       >
-                        {item.title === "Dashboard" ? (
-                          <CardActionArea
-                            sx={{
-                              py: 5,
-                              px: 10,
-                              borderRadius: 2,
-                              color: "primary.main",
-                              bgcolor: "background.neutral",
-                            }}
-                          >
-                            <Box
-                              component={m.img}
-                              whileTap="tap"
-                              whileHover="hover"
-                              variants={{
-                                hover: { scale: 1.02 },
-                                tap: { scale: 0.98 },
-                              }}
-                              src="https://minimals.cc/assets/illustrations/illustration_dashboard.png"
-                            />
-                          </CardActionArea>
-                        ) : (
-                          <>
-                            <IconBullet />
-                            {item.title}
-                          </>
-                        )}
+                        <IconBullet />
+                        {item.title}
                       </ListItemStyle>
                     ))}
                   </List>
@@ -280,7 +257,6 @@ function MenuDesktopItem({ item, isHome, isOpen, isOffset, onOpen, onClose }) {
       component={RouterLink}
       end={path === "/"}
       sx={{
-        ...(isHome && { color: "text.primary" }),
         ...(isOffset && { color: "text.primary" }),
         "&.active": {
           color: "primary.main",

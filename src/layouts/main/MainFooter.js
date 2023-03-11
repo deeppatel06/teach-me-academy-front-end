@@ -9,21 +9,19 @@ import {
   Typography,
   Stack,
 } from "@mui/material";
-// routes
-import { PATH_PAGE } from "../../routes/paths";
 // components
 import Logo from "../../components/Logo";
-import SocialsButton from "../../components/SocialsButton";
+import SocialsButton from "../../components/SocialButtons";
 
 // ----------------------------------------------------------------------
 
 const LINKS = [
   {
-    headline: "DataBoost",
+    headline: "Art station",
     children: [
-      { name: "About us", href: PATH_PAGE.about },
-      { name: "Contact us", href: PATH_PAGE.contact },
-      { name: "FAQs", href: PATH_PAGE.faqs },
+      { name: "About us", href: "" },
+      { name: "Contact us", href: "" },
+      { name: "FAQs", href: "" },
     ],
   },
   {
@@ -36,8 +34,8 @@ const LINKS = [
   {
     headline: "Contact",
     children: [
-      { name: "info@databoost.com", href: "#" },
-      { name: "Modesto, CA 95352", href: "#" },
+      { name: "info@artstation.com", href: "#" },
+      { name: "Test address, 123", href: "#" },
     ],
   },
 ];
@@ -64,10 +62,8 @@ export default function MainFooter() {
           </Grid>
           <Grid item xs={8} md={3}>
             <Typography variant="body2" sx={{ pr: { md: 5 } }}>
-              Welcome to the future for you and your data. Our mission is to
-              empower you and your data to accomplish new and amazing things. We
-              work hand in hand with you to gain new insights and increase
-              efficiency across all your business activities.
+              Welcome to the future for you and your art. Our mission is to
+              empower you and your skills to accomplish new and amazing things.
               {/* The starting point for your next project with Minimal UI Kit, built on the newest
               version of Material-UI ©, ready to be customized to your style. */}
             </Typography>
